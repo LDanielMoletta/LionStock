@@ -1,4 +1,4 @@
-const app = require('./app');
+const app = require('./src/app');
 const connectDatabase = require('./src/config/database');
 const http = require('http');
 const dotenv = require('dotenv');
