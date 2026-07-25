@@ -1,7 +1,10 @@
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
+const path = require('path');
 
-dotenv.config();
+dotenv.config({
+  path: path.resolve(__dirname, '../../.env')
+});
 
 const MONGODB_URI = process.env.MONGODB_URI;
 
@@ -10,10 +13,9 @@ const connectDatabase = async () => {
     throw new Error('MONGODB_URI environment variable is not defined.');
   }
 
-  await mongoose.connect(MONGODB_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  });
+  await mongoose.connect(MONGODB_URI);
+
+  console.log('MongoDB conectado com sucesso!');
 };
 
 module.exports = connectDatabase;

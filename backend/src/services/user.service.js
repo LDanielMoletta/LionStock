@@ -1,10 +1,22 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const dotenv = require('dotenv');
+const path = require('path');
 const User = require('../models/user.model');
 
+dotenv.config({
+  path: path.resolve(__dirname, '../../.env')
+});
+
 const SALT_ROUNDS = parseInt(process.env.BCRYPT_SALT_ROUNDS, 10) || 10;
-const JWT_SECRET = process.env.JWT_SECRET || 'change_this_secret';
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '1h';
+
+const getJwtSecret = () => {
+  if (!process.env.JWT_SECRET) {
+    throw new Error('JWT_SECRET não configurado no ambiente.');
+  }
+  return process.env.JWT_SECRET;
+};
 
 class UserService {
   async createUser(data) {
@@ -67,7 +79,7 @@ class UserService {
 
   generateToken(user) {
     const payload = { id: user._id, role: user.role, email: user.email };
-    return jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
+    return jwt.sign(payload, getJwtSecret(), { expiresIn: JWT_EXPIRES_IN });
   }
 }
 

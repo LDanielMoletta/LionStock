@@ -18,10 +18,10 @@ router.post('/users', authMiddleware, roleMiddleware(['admin']), async (req, res
   return userController.create(req, res, next);
 });
 
-router.get('/users', authMiddleware, roleMiddleware(['admin', 'operator']), userController.findAll);
+router.get('/users', authMiddleware, roleMiddleware(['admin', 'operator', 'viewer']), userController.findAll);
 router.get('/users/:id', authMiddleware, roleMiddleware(['admin', 'operator', 'viewer']), userController.findOne);
 
-router.put('/users/:id', authMiddleware, roleMiddleware(['admin', 'operator']), async (req, res, next) => {
+router.put('/users/:id', authMiddleware, roleMiddleware(['admin']), async (req, res, next) => {
   const errs = validateUpdate(req.body);
   if (errs.length) return error(res, httpStatus.BAD_REQUEST, 'Validação falhou.', errs);
   return userController.update(req, res, next);

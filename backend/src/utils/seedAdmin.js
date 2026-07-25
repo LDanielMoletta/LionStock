@@ -1,9 +1,13 @@
 const dotenv = require('dotenv');
+const path = require('path');
+
+dotenv.config({
+  path: path.resolve(__dirname, '../../.env')
+});
+
 const bcrypt = require('bcrypt');
 const connectDatabase = require('../config/database');
 const User = require('../models/user.model');
-
-dotenv.config();
 
 const SALT_ROUNDS = parseInt(process.env.BCRYPT_SALT_ROUNDS, 10) || 10;
 
