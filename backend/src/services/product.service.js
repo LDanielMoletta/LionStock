@@ -19,13 +19,18 @@ class ProductService {
     const supplier = await Supplier.findById(data.supplier);
     if (!supplier) throw { statusCode: 404, message: 'Fornecedor não encontrado.' };
 
+    const quantity = typeof data.quantity === 'number' ? data.quantity : 0;
+    if (quantity < 0) {
+      throw { statusCode: 400, message: 'Quantidade não pode ser negativa.' };
+    }
+
     const product = new Product({
       sku,
       name,
       description: data.description || '',
       category: category._id,
       supplier: supplier._id,
-      quantity: typeof data.quantity === 'number' ? data.quantity : 0,
+      quantity,
       unitPrice: typeof data.unitPrice === 'number' ? data.unitPrice : 0,
       active: typeof data.active === 'boolean' ? data.active : true,
     });
@@ -66,7 +71,12 @@ class ProductService {
       if (!supplier) throw { statusCode: 404, message: 'Fornecedor não encontrado.' };
       product.supplier = supplier._id;
     }
-    if (typeof data.quantity === 'number') product.quantity = data.quantity;
+    if (typeof data.quantity === 'number') {
+      if (data.quantity < 0) {
+        throw { statusCode: 400, message: 'Quantidade não pode ser negativa.' };
+      }
+      product.quantity = data.quantity;
+    }
     if (typeof data.unitPrice === 'number') product.unitPrice = data.unitPrice;
     if (typeof data.active === 'boolean') product.active = data.active;
 

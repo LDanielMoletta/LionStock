@@ -37,17 +37,33 @@ class MovementService {
     }
 
     await product.save();
-    return movement.populate(['product', 'user']);
+    await movement.populate({ path: 'product' });
+    await movement.populate({ path: 'user', select: '-password' });
+    const result = movement.toObject();
+    if (result.user) delete result.user.password;
+    return result;
   }
 
   async findAll() {
-    return Movement.find().populate(['product', 'user']).sort({ createdAt: -1 });
+    const movements = await Movement.find()
+      .populate({ path: 'product' })
+      .populate({ path: 'user', select: '-password' })
+      .sort({ createdAt: -1 });
+    return movements.map((movement) => {
+      const result = movement.toObject();
+      if (result.user) delete result.user.password;
+      return result;
+    });
   }
 
   async findById(id) {
-    const movement = await Movement.findById(id).populate(['product', 'user']);
+    const movement = await Movement.findById(id)
+      .populate({ path: 'product' })
+      .populate({ path: 'user', select: '-password' });
     if (!movement) throw { statusCode: 404, message: 'Movimentação não encontrada.' };
-    return movement;
+    const result = movement.toObject();
+    if (result.user) delete result.user.password;
+    return result;
   }
 }
 

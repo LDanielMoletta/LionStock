@@ -16,6 +16,9 @@ const validateCreate = (body) => {
   if (body.quantity !== undefined && typeof body.quantity !== 'number') {
     errors.push({ field: 'quantity', message: 'Quantidade deve ser um número.' });
   }
+  if (body.quantity !== undefined && typeof body.quantity === 'number' && body.quantity < 0) {
+    errors.push({ field: 'quantity', message: 'Quantidade não pode ser negativa.' });
+  }
   if (body.unitPrice !== undefined && typeof body.unitPrice !== 'number') {
     errors.push({ field: 'unitPrice', message: 'Preço unitário deve ser um número.' });
   }
@@ -34,6 +37,9 @@ const validateUpdate = (body) => {
   }
   if (body.quantity !== undefined && typeof body.quantity !== 'number') {
     errors.push({ field: 'quantity', message: 'Quantidade deve ser um número.' });
+  }
+  if (body.quantity !== undefined && typeof body.quantity === 'number' && body.quantity < 0) {
+    errors.push({ field: 'quantity', message: 'Quantidade não pode ser negativa.' });
   }
   if (body.unitPrice !== undefined && typeof body.unitPrice !== 'number') {
     errors.push({ field: 'unitPrice', message: 'Preço unitário deve ser um número.' });
