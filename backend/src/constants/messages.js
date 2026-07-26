@@ -8,4 +8,7 @@ module.exports = {
   PRODUCT_CREATED: 'Produto criado com sucesso.',
   PRODUCT_UPDATED: 'Produto atualizado com sucesso.',
   PRODUCT_DELETED: 'Produto removido com sucesso.',
+  CATEGORY_CREATED: 'Categoria criada com sucesso.',
+  CATEGORY_UPDATED: 'Categoria atualizada com sucesso.',
+  CATEGORY_DELETED: 'Categoria removida com sucesso.',
 };
