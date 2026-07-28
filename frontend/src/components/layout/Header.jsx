@@ -1,13 +1,38 @@
 import { useState, useEffect, useRef } from 'react';
-import { Menu, Bell, Search, X, AlertTriangle, PackageX } from 'lucide-react';
+import { Menu, Bell, Search, X, AlertTriangle, PackageX, Boxes, Package, Briefcase, Users } from 'lucide-react';
 import { extractListData } from '../../services/api';
 import { productService } from '../../services/productService';
+import { categoryService } from '../../services/categoryService';
+import { supplierService } from '../../services/supplierService';
+import { userService } from '../../services/userService';
 import { useNavigate } from 'react-router-dom';
 
 const LOW_STOCK_THRESHOLD = 5;
 
+const SEARCH_DOMAINS = [
+  { key: 'products', icon: Boxes, color: 'text-lion-blue', path: '/products' },
+  { key: 'categories', icon: Package, color: 'text-lion-gold', path: '/categories' },
+  { key: 'suppliers', icon: Briefcase, color: 'text-emerald-500', path: '/suppliers' },
+  { key: 'users', icon: Users, color: 'text-violet-500', path: '/users' },
+];
+
+const domainMap = {
+  products: { type: 'Produto', label: 'name', sub: (p) => `SKU: ${p.sku}` },
+  categories: { type: 'Categoria', label: 'name', sub: (c) => c.description || '' },
+  suppliers: { type: 'Fornecedor', label: 'name', sub: (s) => s.contactName || s.email || '' },
+  users: { type: 'Usuário', label: 'name', sub: (u) => u.email },
+};
+
+const domainFilters = {
+  products: (q) => (p) => p.name?.toLowerCase().includes(q) || p.sku?.toLowerCase().includes(q),
+  categories: (q) => (c) => c.name?.toLowerCase().includes(q),
+  suppliers: (q) => (s) => s.name?.toLowerCase().includes(q) || s.contactName?.toLowerCase().includes(q),
+  users: (q) => (u) => u.name?.toLowerCase().includes(q) || u.email?.toLowerCase().includes(q),
+};
+
 const Header = ({ onMenuClick }) => {
   const [search, setSearch] = useState('');
+  const [cache, setCache] = useState({});
   const [results, setResults] = useState([]);
   const [showResults, setShowResults] = useState(false);
   const [showNotif, setShowNotif] = useState(false);
@@ -17,29 +42,47 @@ const Header = ({ onMenuClick }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    productService.getAll()
-      .then((res) => {
-        const products = extractListData(res, []);
-        setAlerts(products);
-      })
-      .catch(() => {});
-  }, []);
+    if (Object.keys(cache).length) return;
+    Promise.all([
+      productService.getAll().then((r) => extractListData(r, [])).catch(() => []),
+      categoryService.getAll().then((r) => extractListData(r, [])).catch(() => []),
+      supplierService.getAll().then((r) => extractListData(r, [])).catch(() => []),
+      userService.getAll().then((r) => extractListData(r, [])).catch(() => []),
+    ]).then(([products, categories, suppliers, users]) => {
+      setCache({ products, categories, suppliers, users });
+      setAlerts(products);
+    });
+  }, [cache]);
 
   useEffect(() => {
     if (search.trim().length < 2) { setResults([]); return; }
     const q = search.toLowerCase();
-    const filtered = alerts.filter((p) =>
-      p.name?.toLowerCase().includes(q) || p.sku?.toLowerCase().includes(q)
-    );
-    setResults(filtered.slice(0, 8));
-  }, [search, alerts]);
+    const out = [];
+    SEARCH_DOMAINS.forEach(({ key }) => {
+      const items = cache[key] || [];
+      items.filter(domainFilters[key](q)).forEach((item) => {
+        const def = domainMap[key];
+        out.push({
+          type: def.type,
+          label: item[def.label],
+          sub: def.sub(item),
+          path: SEARCH_DOMAINS.find((d) => d.key === key).path,
+          item,
+        });
+      });
+    });
+    setResults(out.slice(0, 10));
+  }, [search, cache]);
+
+  useEffect(() => {
+    setShowResults(results.length > 0);
+  }, [results]);
 
   const outOfStock = alerts.filter((p) => (p.quantity ?? 0) <= 0);
   const lowStock = alerts.filter((p) => {
     const q = p.quantity ?? 0;
     return q > 0 && q <= LOW_STOCK_THRESHOLD;
   });
-
   const notifCount = outOfStock.length + lowStock.length;
 
   useEffect(() => {
@@ -72,29 +115,38 @@ const Header = ({ onMenuClick }) => {
             <Search className="h-4 w-4 text-slate-400" />
             <input
               className="w-44 bg-transparent text-sm outline-none"
-              placeholder="Buscar produto..."
+              placeholder="Buscar..."
               value={search}
-              onChange={(e) => { setSearch(e.target.value); setShowResults(true); }}
+              onChange={(e) => setSearch(e.target.value)}
               onFocus={() => { if (results.length) setShowResults(true); }}
             />
             {search && (
-              <button onClick={() => { setSearch(''); setResults([]); setShowResults(false); }} className="text-slate-400 hover:text-slate-600">
+              <button onClick={() => { setSearch(''); setShowResults(false); }} className="text-slate-400 hover:text-slate-600">
                 <X className="h-4 w-4" />
               </button>
             )}
           </div>
-          {showResults && results.length > 0 && (
+          {showResults && (
             <div className="absolute right-0 mt-2 w-80 rounded-2xl border border-slate-200 bg-white py-2 shadow-soft">
-              {results.map((p) => (
-                <button
-                  key={p._id}
-                  className="flex w-full items-center justify-between px-4 py-2 text-sm hover:bg-slate-50"
-                  onClick={() => { navigate('/products'); setSearch(''); setShowResults(false); }}
-                >
-                  <span className="font-medium text-slate-900">{p.name}</span>
-                  <span className="text-xs text-slate-400">SKU: {p.sku}</span>
-                </button>
-              ))}
+              {results.map((item, i) => {
+                const domain = SEARCH_DOMAINS.find((d) => d.path === item.path);
+                const Icon = domain?.icon || Search;
+                const color = domain?.color || 'text-slate-400';
+                return (
+                  <button
+                    key={`${item.type}-${i}`}
+                    className="flex w-full items-center gap-3 px-4 py-2 text-sm hover:bg-slate-50"
+                    onClick={() => { navigate(item.path); setSearch(''); setShowResults(false); }}
+                  >
+                    <Icon className={`h-4 w-4 shrink-0 ${color}`} />
+                    <div className="min-w-0 text-left">
+                      <p className="truncate font-medium text-slate-900">{item.label}</p>
+                      <p className="truncate text-xs text-slate-400">{item.sub}</p>
+                    </div>
+                    <span className="shrink-0 text-[10px] uppercase tracking-wider text-slate-400">{item.type}</span>
+                  </button>
+                );
+              })}
             </div>
           )}
         </div>
