@@ -260,7 +260,7 @@ O sistema utiliza:
 
 ---
 
-### Luis
+### Luiz Henrique
 
 - Autenticação
 - Usuários
@@ -268,7 +268,7 @@ O sistema utiliza:
 
 ---
 
-### Marinho
+### Julio Cesar
 
 - Produtos
 - Categorias
