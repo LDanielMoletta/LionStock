@@ -18,7 +18,7 @@ https://lionstock.onrender.com/
 
 ---
 
-# Tecnologias Utilizadas
+#  Tecnologias Utilizadas
 
 ## Frontend
 
