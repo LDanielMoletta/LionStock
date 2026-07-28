@@ -1,26 +1,24 @@
+````markdown
 # 🦁 LionStock
 
 Sistema de gerenciamento de estoque desenvolvido como projeto final do curso de Desenvolvimento Full Stack.
 
-O LionStock permite o controle de produtos, categorias, fornecedores, movimentações de estoque e usuários, utilizando autenticação por JWT e controle de permissões por perfil.
+O **LionStock** permite o gerenciamento completo de produtos, categorias, fornecedores, movimentações de estoque e usuários, utilizando autenticação via **JWT** e controle de permissões baseado em perfis de acesso.
 
 ---
 
-# Demonstração
+# 🚀 Demonstração
 
-## Frontend
-
-https://lionstock-frontend.onrender.com/
-
-## Backend
-
-https://lionstock.onrender.com/
+| Aplicação | Link |
+|-----------|------|
+| 🌐 Frontend | https://lionstock-frontend.onrender.com/ |
+| ⚙️ Backend API | https://lionstock.onrender.com/ |
 
 ---
 
-#  Tecnologias Utilizadas
+# 🛠️ Tecnologias Utilizadas
 
-## Frontend
+## 🎨 Frontend
 
 - React
 - Vite
@@ -29,254 +27,99 @@ https://lionstock.onrender.com/
 - Tailwind CSS
 - Lucide React
 
-## Backend
+## ⚙️ Backend
 
 - Node.js
 - Express
 - MongoDB Atlas
 - Mongoose
-- JWT
+- JWT (JSON Web Token)
 - Bcrypt
 - Dotenv
 
-## Deploy
+## ☁️ Deploy
 
 - Render
 - MongoDB Atlas
 
 ---
 
-# Funcionalidades
+# ✨ Funcionalidades
 
-## Autenticação
+## 🔐 Autenticação
 
 - Login com JWT
 - Logout
 - Rotas protegidas
-- Controle por perfil
+- Controle de acesso por perfil
 
----
+## 👥 Usuários
 
-## Usuários
-
-- Cadastro
-- Edição
-- Exclusão
-- Consulta
-
-Perfis:
-
-- Administrador
-- Operador
-- Visualizador
-
----
-
-## Produtos
+### Funcionalidades
 
 - Cadastro
 - Consulta
 - Atualização
 - Exclusão
 
----
+### Perfis de acesso
 
-## Categorias
+| Perfil | Permissões |
+|---------|------------|
+| 👑 Administrador | Acesso total ao sistema |
+| 🛠️ Operador | Gerencia produtos e movimentações |
+| 👁️ Visualizador | Apenas consulta informações |
 
-- Cadastro
-- Consulta
-- Atualização
-- Exclusão
-
----
-
-## Fornecedores
+## 📦 Produtos
 
 - Cadastro
 - Consulta
 - Atualização
 - Exclusão
 
----
+## 🏷️ Categorias
 
-## Movimentações
+- Cadastro
+- Consulta
+- Atualização
+- Exclusão
+
+## 🚚 Fornecedores
+
+- Cadastro
+- Consulta
+- Atualização
+- Exclusão
+
+## 📊 Movimentações
 
 - Entrada de estoque
-
 - Saída de estoque
-
 - Histórico de movimentações
 
 ---
 
-# Estrutura do Projeto
+# 📁 Estrutura do Projeto
 
-```
-LionStock
+```text
+LionStock/
+├── backend/
+│   ├── src/
+│   │   ├── config/
+│   │   ├── controllers/
+│   │   ├── middlewares/
+│   │   ├── models/
+│   │   ├── routes/
+│   │   ├── services/
+│   │   ├── utils/
+│   │   └── validators/
+│   ├── server.js
+│   └── package.json
 │
-├── backend
-│   ├── src
-│   ├── routes
-│   ├── controllers
-│   ├── services
-│   ├── models
-│   ├── middlewares
-│   └── utils
-│
-└── frontend
-    ├── src
-    ├── pages
-    ├── components
-    ├── services
-    ├── contexts
-    └── routes
+└── frontend/
+    ├── src/
+    ├── public/
+    ├── vite.config.js
+    └── package.json
 ```
-
----
-
-# Instalação
-
-## Backend
-
-```bash
-git clone https://github.com/LDanielMoletta/LionStock.git
-
-cd backend
-
-npm install
-
-npm run dev
-```
-
----
-
-## Frontend
-
-```bash
-cd frontend
-
-npm install
-
-npm run dev
-```
-
----
-
-# Variáveis de Ambiente
-
-Backend (.env)
-
-```env
-PORT=3000
-
-MONGODB_URI=...
-
-JWT_SECRET=...
-
-JWT_EXPIRES_IN=24h
-
-ADMIN_EMAIL=admin@lionstock.com
-
-ADMIN_PASSWORD=********
-```
-
-Frontend (.env)
-
-```env
-VITE_API_URL=https://lionstock.onrender.com
-```
-
----
-
-# API
-
-## Login
-
-POST
-
-```
-/api/auth/login
-```
-
-## Produtos
-
-GET
-
-POST
-
-PUT
-
-DELETE
-
-```
-/api/products
-```
-
-## Categorias
-
-```
-/api/categories
-```
-
-## Fornecedores
-
-```
-/api/suppliers
-```
-
-## Usuários
-
-```
-/api/users
-```
-
-## Movimentações
-
-```
-/api/movements
-```
-
----
-
-# Segurança
-
-O sistema utiliza:
-
-- JWT para autenticação
-- Senhas criptografadas com Bcrypt
-- Middleware de autenticação
-- Middleware de autorização por perfil
-
----
-
-# Equipe
-
-### Luiz Daniel Moletta Junior
-
-- Frontend
-- Integração Frontend/Backend
-- Deploy
-- Documentação
-
----
-
-### Luiz Henrique
-
-- Autenticação
-- Usuários
-- JWT
-
----
-
-### Julio Cesar
-
-- Produtos
-- Categorias
-- Fornecedores
-- Movimentações
-
----
-
-# Licença
-
-Projeto acadêmico desenvolvido exclusivamente para fins educacionais.
+````
