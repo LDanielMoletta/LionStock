@@ -1,7 +1,7 @@
 services:
   - type: web
     name: lionstock-frontend
-    region: southamerica-east1
+    region: ohio
     rootDir: frontend
     runtime: node
     plan: free
