@@ -11,7 +11,7 @@ const UsersPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [modal, setModal] = useState(null);
-  const [form, setForm] = useState({ name: '', email: '', password: '', role: 'viewer' });
+  const [form, setForm] = useState({ name: '', email: '', password: '', role: 'viewer', active: true });
   const [saving, setSaving] = useState(false);
   const [formError, setFormError] = useState('');
 
@@ -28,8 +28,8 @@ const UsersPage = () => {
 
   useEffect(() => { load(); }, []);
 
-  const openCreate = () => { setForm({ name: '', email: '', password: '', role: 'viewer' }); setModal('create'); setFormError(''); };
-  const openEdit = (u) => { setForm({ _id: u._id, name: u.name || '', email: u.email || '', role: u.role || 'viewer' }); setModal('edit'); setFormError(''); };
+  const openCreate = () => { setForm({ name: '', email: '', password: '', role: 'viewer', active: true }); setModal('create'); setFormError(''); };
+  const openEdit = (u) => { setForm({ _id: u._id, name: u.name || '', email: u.email || '', password: '', role: u.role || 'viewer', active: typeof u.active === 'boolean' ? u.active : true }); setModal('edit'); setFormError(''); };
   const openDelete = (u) => { setForm(u); setModal('delete'); };
 
   const handleSave = async () => {
@@ -39,7 +39,8 @@ const UsersPage = () => {
       if (modal === 'create') {
         await userService.create(form);
       } else {
-        const payload = { name: form.name, email: form.email, role: form.role };
+        const payload = { name: form.name, email: form.email, role: form.role, active: form.active };
+        if (form.password) payload.password = form.password;
         await userService.update(form._id, payload);
       }
       setModal(null);
@@ -79,7 +80,7 @@ const UsersPage = () => {
       ) : users.length === 0 ? (
         <StateView title="Sem usuários" description="Nenhum usuário cadastrado." icon={Users2} />
       ) : (
-        <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-soft">
+        <div className="overflow-x-auto rounded-3xl border border-slate-200 bg-white shadow-soft">
           <table className="min-w-full divide-y divide-slate-200 text-left text-sm">
             <thead className="bg-slate-50">
               <tr>
@@ -105,8 +106,8 @@ const UsersPage = () => {
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex gap-2">
-                      <button onClick={() => openEdit(u)} className="rounded-xl p-2 text-slate-400 hover:bg-slate-100"><Pencil className="h-4 w-4" /></button>
-                      <button onClick={() => openDelete(u)} className="rounded-xl p-2 text-red-400 hover:bg-red-50"><Trash2 className="h-4 w-4" /></button>
+                      <button onClick={() => openEdit(u)} className="rounded-xl p-2 text-slate-400 hover:bg-slate-100" title="Editar"><Pencil className="h-4 w-4" /></button>
+                      <button onClick={() => openDelete(u)} className="rounded-xl p-2 text-red-400 hover:bg-red-50" title="Excluir"><Trash2 className="h-4 w-4" /></button>
                     </div>
                   </td>
                 </tr>
@@ -121,14 +122,22 @@ const UsersPage = () => {
           <div className="space-y-3">
             <input placeholder="Nome" value={form.name} onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))} className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none focus:border-lion-blue" />
             <input placeholder="E-mail" type="email" value={form.email} onChange={(e) => setForm((p) => ({ ...p, email: e.target.value }))} className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none focus:border-lion-blue" />
-            {modal === 'create' && (
+            {modal === 'create' ? (
               <input placeholder="Senha" type="password" value={form.password} onChange={(e) => setForm((p) => ({ ...p, password: e.target.value }))} className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none focus:border-lion-blue" />
+            ) : (
+              <input placeholder="Nova senha (deixe em branco para manter)" type="password" value={form.password} onChange={(e) => setForm((p) => ({ ...p, password: e.target.value }))} className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none focus:border-lion-blue" />
             )}
             <select value={form.role} onChange={(e) => setForm((p) => ({ ...p, role: e.target.value }))} className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none focus:border-lion-blue">
               <option value="admin">Admin</option>
               <option value="operator">Operador</option>
               <option value="viewer">Visualizador</option>
             </select>
+            {modal === 'edit' ? (
+              <label className="flex items-center gap-2 text-sm text-slate-700">
+                <input type="checkbox" checked={form.active} onChange={(e) => setForm((p) => ({ ...p, active: e.target.checked }))} className="rounded border-slate-300" />
+                Usuário ativo
+              </label>
+            ) : null}
             {formError && <p className="text-sm text-red-500">{formError}</p>}
             <button onClick={handleSave} disabled={saving} className="w-full rounded-xl bg-lion-blue px-4 py-2.5 text-sm font-semibold text-white transition hover:opacity-90 disabled:opacity-50">
               {saving ? 'Salvando...' : 'Salvar'}

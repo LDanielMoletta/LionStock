@@ -65,7 +65,7 @@ const MovementsPage = () => {
       ) : movements.length === 0 ? (
         <StateView title="Sem movimentações" description="Nenhuma movimentação registrada." icon={ArrowRightLeft} />
       ) : (
-        <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-soft">
+        <div className="overflow-x-auto rounded-3xl border border-slate-200 bg-white shadow-soft">
           <table className="min-w-full divide-y divide-slate-200 text-left text-sm">
             <thead className="bg-slate-50">
               <tr>
