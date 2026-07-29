@@ -120,18 +120,22 @@ const UsersPage = () => {
       {modal === 'create' || modal === 'edit' ? (
         <Modal title={modal === 'create' ? 'Novo Usuário' : 'Editar Usuário'} onClose={() => setModal(null)}>
           <div className="space-y-3">
-            <input placeholder="Nome" value={form.name} onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))} className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none focus:border-lion-blue" />
-            <input placeholder="E-mail" type="email" value={form.email} onChange={(e) => setForm((p) => ({ ...p, email: e.target.value }))} className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none focus:border-lion-blue" />
+            <div><label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-slate-500">Nome do Usuário</label><input placeholder="Nome completo" value={form.name} onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))} className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none focus:border-lion-blue" /></div>
+            <div><label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-slate-500">E-mail</label><input placeholder="email@exemplo.com" type="email" value={form.email} onChange={(e) => setForm((p) => ({ ...p, email: e.target.value }))} className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none focus:border-lion-blue" /></div>
+            <div><label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-slate-500">Senha</label>
             {modal === 'create' ? (
-              <input placeholder="Senha" type="password" value={form.password} onChange={(e) => setForm((p) => ({ ...p, password: e.target.value }))} className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none focus:border-lion-blue" />
+              <input placeholder="Mínimo 6 caracteres" type="password" value={form.password} onChange={(e) => setForm((p) => ({ ...p, password: e.target.value }))} className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none focus:border-lion-blue" />
             ) : (
-              <input placeholder="Nova senha (deixe em branco para manter)" type="password" value={form.password} onChange={(e) => setForm((p) => ({ ...p, password: e.target.value }))} className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none focus:border-lion-blue" />
+              <input placeholder="Deixe em branco para manter" type="password" value={form.password} onChange={(e) => setForm((p) => ({ ...p, password: e.target.value }))} className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none focus:border-lion-blue" />
             )}
+            </div>
+            <div><label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-slate-500">Perfil</label>
             <select value={form.role} onChange={(e) => setForm((p) => ({ ...p, role: e.target.value }))} className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none focus:border-lion-blue">
               <option value="admin">Admin</option>
               <option value="operator">Operador</option>
               <option value="viewer">Visualizador</option>
             </select>
+            </div>
             {modal === 'edit' ? (
               <label className="flex items-center gap-2 text-sm text-slate-700">
                 <input type="checkbox" checked={form.active} onChange={(e) => setForm((p) => ({ ...p, active: e.target.checked }))} className="rounded border-slate-300" />

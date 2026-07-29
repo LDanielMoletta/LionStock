@@ -108,8 +108,8 @@ const CategoriesPage = () => {
       {modal === 'create' || modal === 'edit' ? (
         <Modal title={modal === 'create' ? 'Nova Categoria' : 'Editar Categoria'} onClose={() => setModal(null)}>
           <div className="space-y-3">
-            <input placeholder="Nome" value={form.name} onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))} className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none focus:border-lion-blue" />
-            <textarea placeholder="Descrição" value={form.description} onChange={(e) => setForm((p) => ({ ...p, description: e.target.value }))} className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none focus:border-lion-blue" rows={2} />
+            <div><label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-slate-500">Nome da Categoria</label><input placeholder="Ex: Eletrônicos" value={form.name} onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))} className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none focus:border-lion-blue" /></div>
+            <div><label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-slate-500">Descrição</label><textarea placeholder="Descrição da categoria" value={form.description} onChange={(e) => setForm((p) => ({ ...p, description: e.target.value }))} className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none focus:border-lion-blue" rows={2} /></div>
             {formError && <p className="text-sm text-red-500">{formError}</p>}
             <button onClick={handleSave} disabled={saving} className="w-full rounded-xl bg-lion-blue px-4 py-2.5 text-sm font-semibold text-white transition hover:opacity-90 disabled:opacity-50">
               {saving ? 'Salvando...' : 'Salvar'}

@@ -98,16 +98,24 @@ const MovementsPage = () => {
       {modal === 'create' ? (
         <Modal title="Nova Movimentação" onClose={() => setModal(null)}>
           <div className="space-y-3">
+            <div><label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-slate-500">Produto</label>
             <select value={form.product} onChange={(e) => setForm((p) => ({ ...p, product: e.target.value }))} className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none focus:border-lion-blue">
               <option value="">Selecione o produto</option>
               {products.map((p) => <option key={p._id} value={p._id}>{p.name} (Estoque: {p.quantity})</option>)}
             </select>
+            </div>
+            <div><label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-slate-500">Tipo de Movimentação</label>
             <select value={form.type} onChange={(e) => setForm((p) => ({ ...p, type: e.target.value }))} className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none focus:border-lion-blue">
               <option value="ENTRY">Entrada</option>
               <option value="EXIT">Saída</option>
             </select>
+            </div>
+            <div><label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-slate-500">Quantidade</label>
             <input type="number" min="1" placeholder="Quantidade" value={form.quantity} onChange={(e) => setForm((p) => ({ ...p, quantity: e.target.value }))} className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none focus:border-lion-blue" />
-            <textarea placeholder="Motivo (opcional)" value={form.reason} onChange={(e) => setForm((p) => ({ ...p, reason: e.target.value }))} className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none focus:border-lion-blue" rows={2} />
+            </div>
+            <div><label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-slate-500">Motivo (opcional)</label>
+            <textarea placeholder="Ex: Reposição de estoque" value={form.reason} onChange={(e) => setForm((p) => ({ ...p, reason: e.target.value }))} className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none focus:border-lion-blue" rows={2} />
+            </div>
             {formError && <p className="text-sm text-red-500">{formError}</p>}
             <button onClick={handleSave} disabled={saving} className="w-full rounded-xl bg-lion-blue px-4 py-2.5 text-sm font-semibold text-white transition hover:opacity-90 disabled:opacity-50">
               {saving ? 'Salvando...' : 'Registrar'}

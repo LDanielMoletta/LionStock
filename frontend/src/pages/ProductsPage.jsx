@@ -7,6 +7,7 @@ import { extractListData } from '../services/api';
 import { productService } from '../services/productService';
 import { categoryService } from '../services/categoryService';
 import { supplierService } from '../services/supplierService';
+import generateSku from '../utils/generateSku';
 
 const emptyForm = { sku: '', name: '', description: '', category: '', supplier: '', quantity: 0, unitPrice: 0 };
 
@@ -40,8 +41,23 @@ const ProductsPage = () => {
 
   useEffect(() => { load(); }, []);
 
-  const openCreate = () => { setForm(emptyForm); setModal('create'); setFormError(''); };
-  const openEdit = (p) => { setForm({ sku: p.sku || '', name: p.name || '', description: p.description || '', category: p.category?._id || p.category || '', supplier: p.supplier?._id || p.supplier || '', quantity: p.quantity ?? 0, unitPrice: p.unitPrice ?? 0 }); setModal('edit'); setFormError(''); };
+  const openCreate = () => { setForm({ ...emptyForm, sku: generateSku() }); setModal('create'); setFormError(''); };
+
+  const openEdit = (p) => {
+    setForm({
+      _id: p._id,
+      sku: p.sku || '',
+      name: p.name || '',
+      description: p.description || '',
+      category: p.category?._id || p.category || '',
+      supplier: p.supplier?._id || p.supplier || '',
+      quantity: p.quantity ?? 0,
+      unitPrice: p.unitPrice ?? 0,
+    });
+    setModal('edit');
+    setFormError('');
+  };
+
   const openDelete = (p) => { setForm(p); setModal('delete'); };
 
   const handleSave = async () => {
@@ -51,7 +67,11 @@ const ProductsPage = () => {
       if (modal === 'create') {
         await productService.create(form);
       } else {
-        await productService.update(form._id, form);
+        await productService.update(form._id, {
+          sku: form.sku, name: form.name, description: form.description,
+          category: form.category, supplier: form.supplier,
+          quantity: Number(form.quantity), unitPrice: Number(form.unitPrice),
+        });
       }
       setModal(null);
       await load();
@@ -108,7 +128,7 @@ const ProductsPage = () => {
             <tbody className="divide-y divide-slate-100">
               {products.map((p) => (
                 <tr key={p._id}>
-                  <td className="px-4 py-3 font-mono text-slate-600">{p.sku}</td>
+                  <td className="px-4 py-3 font-mono text-xs text-slate-600">{p.sku}</td>
                   <td className="px-4 py-3 font-medium text-slate-900">{p.name}</td>
                   <td className="px-4 py-3 text-slate-600">{p.category?.name || '-'}</td>
                   <td className="px-4 py-3 text-slate-600">{p.supplier?.name || '-'}</td>
@@ -130,19 +150,40 @@ const ProductsPage = () => {
       {modal === 'create' || modal === 'edit' ? (
         <Modal title={modal === 'create' ? 'Novo Produto' : 'Editar Produto'} onClose={() => setModal(null)}>
           <div className="space-y-3">
-            <input placeholder="SKU" value={form.sku} onChange={set('sku')} className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none focus:border-lion-blue" />
-            <input placeholder="Nome" value={form.name} onChange={set('name')} className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none focus:border-lion-blue" />
-            <textarea placeholder="Descrição" value={form.description} onChange={set('description')} className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none focus:border-lion-blue" rows={2} />
-            <select value={form.category} onChange={set('category')} className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none focus:border-lion-blue">
-              <option value="">Selecione a categoria</option>
-              {categories.map((c) => <option key={c._id} value={c._id}>{c.name}</option>)}
-            </select>
-            <select value={form.supplier} onChange={set('supplier')} className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none focus:border-lion-blue">
-              <option value="">Selecione o fornecedor</option>
-              {suppliers.map((s) => <option key={s._id} value={s._id}>{s.name}</option>)}
-            </select>
-            <input type="number" placeholder="Quantidade" value={form.quantity} onChange={(e) => setForm((p) => ({ ...p, quantity: Number(e.target.value) }))} className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none focus:border-lion-blue" />
-            <input type="number" placeholder="Preço unitário" value={form.unitPrice} onChange={(e) => setForm((p) => ({ ...p, unitPrice: Number(e.target.value) }))} className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none focus:border-lion-blue" />
+            <div>
+              <label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-slate-500">SKU</label>
+              <input placeholder="Código SKU" value={form.sku} onChange={set('sku')} className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none focus:border-lion-blue" />
+            </div>
+            <div>
+              <label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-slate-500">Nome do Produto</label>
+              <input placeholder="Ex: Teclado Mecânico" value={form.name} onChange={set('name')} className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none focus:border-lion-blue" />
+            </div>
+            <div>
+              <label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-slate-500">Descrição</label>
+              <textarea placeholder="Descrição do produto" value={form.description} onChange={set('description')} className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none focus:border-lion-blue" rows={2} />
+            </div>
+            <div>
+              <label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-slate-500">Categoria</label>
+              <select value={form.category} onChange={set('category')} className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none focus:border-lion-blue">
+                <option value="">Selecione a categoria</option>
+                {categories.map((c) => <option key={c._id} value={c._id}>{c.name}</option>)}
+              </select>
+            </div>
+            <div>
+              <label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-slate-500">Fornecedor</label>
+              <select value={form.supplier} onChange={set('supplier')} className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none focus:border-lion-blue">
+                <option value="">Selecione o fornecedor</option>
+                {suppliers.map((s) => <option key={s._id} value={s._id}>{s.name}</option>)}
+              </select>
+            </div>
+            <div>
+              <label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-slate-500">Quantidade em Estoque</label>
+              <input type="number" min="0" placeholder="0" value={form.quantity} onChange={(e) => setForm((p) => ({ ...p, quantity: Number(e.target.value) }))} className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none focus:border-lion-blue" />
+            </div>
+            <div>
+              <label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-slate-500">Preço Unitário (R$)</label>
+              <input type="number" min="0" step="0.01" placeholder="0.00" value={form.unitPrice} onChange={(e) => setForm((p) => ({ ...p, unitPrice: Number(e.target.value) }))} className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none focus:border-lion-blue" />
+            </div>
             {formError && <p className="text-sm text-red-500">{formError}</p>}
             <button onClick={handleSave} disabled={saving} className="w-full rounded-xl bg-lion-blue px-4 py-2.5 text-sm font-semibold text-white transition hover:opacity-90 disabled:opacity-50">
               {saving ? 'Salvando...' : 'Salvar'}
