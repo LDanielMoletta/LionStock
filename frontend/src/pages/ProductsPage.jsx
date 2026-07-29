@@ -67,6 +67,7 @@ const ProductsPage = () => {
       if (modal === 'create') {
         await productService.create(form);
       } else {
+        if (!form._id) { setFormError('ID do produto não encontrado.'); setSaving(false); return; }
         await productService.update(form._id, {
           sku: form.sku, name: form.name, description: form.description,
           category: form.category, supplier: form.supplier,
