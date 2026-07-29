@@ -150,40 +150,47 @@ const ProductsPage = () => {
 
       {modal === 'create' || modal === 'edit' ? (
         <Modal title={modal === 'create' ? 'Novo Produto' : 'Editar Produto'} onClose={() => setModal(null)}>
-          <div className="space-y-3">
+          <div className="space-y-5">
             <div>
-              <label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-slate-500">SKU</label>
-              <input placeholder="Código SKU" value={form.sku} onChange={set('sku')} className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none focus:border-lion-blue" />
+              <label className="mb-1 block text-sm font-semibold text-slate-800">SKU</label>
+              <p className="mb-2 text-xs text-slate-400">Código único de identificação do produto no sistema.</p>
+              <input placeholder="Ex: PRD-A7X9K" value={form.sku} onChange={set('sku')} className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none focus:border-lion-blue focus:ring-2 focus:ring-lion-blue/10" />
             </div>
             <div>
-              <label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-slate-500">Nome do Produto</label>
-              <input placeholder="Ex: Teclado Mecânico" value={form.name} onChange={set('name')} className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none focus:border-lion-blue" />
+              <label className="mb-1 block text-sm font-semibold text-slate-800">Nome do Produto</label>
+              <p className="mb-2 text-xs text-slate-400">Nome que aparecerá nas listas e na busca do sistema.</p>
+              <input placeholder="Ex: Teclado Mecânico" value={form.name} onChange={set('name')} className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none focus:border-lion-blue focus:ring-2 focus:ring-lion-blue/10" />
             </div>
             <div>
-              <label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-slate-500">Descrição</label>
-              <textarea placeholder="Descrição do produto" value={form.description} onChange={set('description')} className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none focus:border-lion-blue" rows={2} />
+              <label className="mb-1 block text-sm font-semibold text-slate-800">Descrição</label>
+              <p className="mb-2 text-xs text-slate-400">Informações adicionais sobre o produto (opcional).</p>
+              <textarea placeholder="Ex: Teclado mecânico RGB, switch azul, ABNT2" value={form.description} onChange={set('description')} className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none focus:border-lion-blue focus:ring-2 focus:ring-lion-blue/10" rows={2} />
             </div>
             <div>
-              <label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-slate-500">Categoria</label>
-              <select value={form.category} onChange={set('category')} className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none focus:border-lion-blue">
+              <label className="mb-1 block text-sm font-semibold text-slate-800">Categoria</label>
+              <p className="mb-2 text-xs text-slate-400">Classificação usada para agrupar produtos semelhantes.</p>
+              <select value={form.category} onChange={set('category')} className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none focus:border-lion-blue focus:ring-2 focus:ring-lion-blue/10">
                 <option value="">Selecione a categoria</option>
                 {categories.map((c) => <option key={c._id} value={c._id}>{c.name}</option>)}
               </select>
             </div>
             <div>
-              <label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-slate-500">Fornecedor</label>
-              <select value={form.supplier} onChange={set('supplier')} className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none focus:border-lion-blue">
+              <label className="mb-1 block text-sm font-semibold text-slate-800">Fornecedor</label>
+              <p className="mb-2 text-xs text-slate-400">Empresa responsável pelo fornecimento deste produto.</p>
+              <select value={form.supplier} onChange={set('supplier')} className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none focus:border-lion-blue focus:ring-2 focus:ring-lion-blue/10">
                 <option value="">Selecione o fornecedor</option>
                 {suppliers.map((s) => <option key={s._id} value={s._id}>{s.name}</option>)}
               </select>
             </div>
             <div>
-              <label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-slate-500">Quantidade em Estoque</label>
-              <input type="number" min="0" placeholder="0" value={form.quantity} onChange={(e) => setForm((p) => ({ ...p, quantity: Number(e.target.value) }))} className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none focus:border-lion-blue" />
+              <label className="mb-1 block text-sm font-semibold text-slate-800">Quantidade em Estoque</label>
+              <p className="mb-2 text-xs text-slate-400">Número atual de unidades disponíveis no estoque.</p>
+              <input type="number" min="0" placeholder="0" value={form.quantity} onChange={(e) => setForm((p) => ({ ...p, quantity: Number(e.target.value) }))} className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none focus:border-lion-blue focus:ring-2 focus:ring-lion-blue/10" />
             </div>
             <div>
-              <label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-slate-500">Preço Unitário (R$)</label>
-              <input type="number" min="0" step="0.01" placeholder="0.00" value={form.unitPrice} onChange={(e) => setForm((p) => ({ ...p, unitPrice: Number(e.target.value) }))} className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none focus:border-lion-blue" />
+              <label className="mb-1 block text-sm font-semibold text-slate-800">Preço Unitário (R$)</label>
+              <p className="mb-2 text-xs text-slate-400">Valor de venda de uma única unidade do produto.</p>
+              <input type="number" min="0" step="0.01" placeholder="0.00" value={form.unitPrice} onChange={(e) => setForm((p) => ({ ...p, unitPrice: Number(e.target.value) }))} className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none focus:border-lion-blue focus:ring-2 focus:ring-lion-blue/10" />
             </div>
             {formError && <p className="text-sm text-red-500">{formError}</p>}
             <button onClick={handleSave} disabled={saving} className="w-full rounded-xl bg-lion-blue px-4 py-2.5 text-sm font-semibold text-white transition hover:opacity-90 disabled:opacity-50">
