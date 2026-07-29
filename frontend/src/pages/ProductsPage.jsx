@@ -73,7 +73,7 @@ const ProductsPage = () => {
         const id = editingId.current;
         if (!id) { setFormError('ID do produto não encontrado.'); setSaving(false); return; }
         await productService.update(id, {
-          sku: form.sku, name: form.name, description: form.description,
+          name: form.name, description: form.description,
           category: form.category, supplier: form.supplier,
           quantity: Number(form.quantity), unitPrice: Number(form.unitPrice),
         });
@@ -157,11 +157,6 @@ const ProductsPage = () => {
       {modal === 'create' || modal === 'edit' ? (
         <Modal title={modal === 'create' ? 'Novo Produto' : 'Editar Produto'} onClose={() => setModal(null)}>
           <div className="space-y-5">
-            <div>
-              <p className="mb-1 text-xs text-slate-400">Código único de identificação do produto no sistema.</p>
-              <label className="mb-1 block text-sm font-semibold text-slate-800">SKU</label>
-              <input placeholder="Ex: PRD-A7X9K" value={form.sku} onChange={set('sku')} className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none focus:border-lion-blue focus:ring-2 focus:ring-lion-blue/10" />
-            </div>
             <div>
               <p className="mb-1 text-xs text-slate-400">Nome que aparecerá nas listas e na busca do sistema.</p>
               <label className="mb-1 block text-sm font-semibold text-slate-800">Nome do Produto</label>
