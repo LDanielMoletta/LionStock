@@ -57,8 +57,14 @@ const Header = ({ onMenuClick }) => {
     fetchData();
     const interval = setInterval(fetchData, REFRESH_INTERVAL);
     const onFocus = () => fetchData();
+    const onStockUpdate = () => fetchData();
     window.addEventListener('focus', onFocus);
-    return () => { clearInterval(interval); window.removeEventListener('focus', onFocus); };
+    window.addEventListener('stock-updated', onStockUpdate);
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener('focus', onFocus);
+      window.removeEventListener('stock-updated', onStockUpdate);
+    };
   }, []);
 
   useEffect(() => {

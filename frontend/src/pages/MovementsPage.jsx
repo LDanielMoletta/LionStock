@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+const emitUpdate = () => window.dispatchEvent(new CustomEvent('stock-updated'));
 import { ArrowRightLeft, Plus } from 'lucide-react';
 import PageHeader from '../components/common/PageHeader';
 import StateView from '../components/common/StateView';
@@ -42,6 +43,7 @@ const MovementsPage = () => {
     try {
       await movementService.create({ ...form, quantity: Number(form.quantity) });
       setModal(null);
+      emitUpdate();
       await load();
     } catch (err) {
       setFormError(err?.response?.data?.message || 'Erro ao registrar movimentação.');
