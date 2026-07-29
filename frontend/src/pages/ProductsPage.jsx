@@ -9,6 +9,8 @@ import { categoryService } from '../services/categoryService';
 import { supplierService } from '../services/supplierService';
 import generateSku from '../utils/generateSku';
 
+let editingProductId = null;
+
 const emptyForm = { _id: '', sku: '', name: '', description: '', category: '', supplier: '', quantity: 0, unitPrice: 0 };
 
 const emitUpdate = () => window.dispatchEvent(new CustomEvent('stock-updated'));
@@ -43,9 +45,10 @@ const ProductsPage = () => {
 
   useEffect(() => { load(); }, []);
 
-  const openCreate = () => { setForm({ ...emptyForm, sku: generateSku() }); setModal('create'); setFormError(''); };
+  const openCreate = () => { setForm({ ...emptyForm, sku: generateSku() }); editingProductId = null; setModal('create'); setFormError(''); };
 
   const openEdit = (p) => {
+    editingProductId = p._id;
     setForm({
       _id: p._id,
       sku: p.sku || '',
@@ -60,7 +63,7 @@ const ProductsPage = () => {
     setFormError('');
   };
 
-  const openDelete = (p) => { setForm({ _id: p._id, name: p.name }); setModal('delete'); };
+  const openDelete = (p) => { editingProductId = p._id; setForm({ _id: p._id, name: p.name }); setModal('delete'); };
 
   const handleSave = async () => {
     setSaving(true);
@@ -69,8 +72,9 @@ const ProductsPage = () => {
       if (modal === 'create') {
         await productService.create(form);
       } else {
-        if (!form._id) { setFormError('ID do produto não encontrado.'); setSaving(false); return; }
-        await productService.update(form._id, {
+        const id = editingProductId || form._id;
+        if (!id) { setFormError('ID do produto não encontrado.'); setSaving(false); return; }
+        await productService.update(id, {
           name: form.name, description: form.description,
           category: form.category, supplier: form.supplier,
           quantity: Number(form.quantity), unitPrice: Number(form.unitPrice),
@@ -89,7 +93,7 @@ const ProductsPage = () => {
   const handleDelete = async () => {
     setSaving(true);
     try {
-      await productService.remove(form._id);
+      await productService.remove(editingProductId || form._id);
       setModal(null);
       emitUpdate();
       await load();
