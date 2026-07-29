@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import { Boxes, Pencil, Trash2, Plus } from 'lucide-react';
 import PageHeader from '../components/common/PageHeader';
 import StateView from '../components/common/StateView';
@@ -9,7 +9,7 @@ import { categoryService } from '../services/categoryService';
 import { supplierService } from '../services/supplierService';
 import generateSku from '../utils/generateSku';
 
-const emptyForm = { sku: '', name: '', description: '', category: '', supplier: '', quantity: 0, unitPrice: 0 };
+const emptyForm = { _id: '', sku: '', name: '', description: '', category: '', supplier: '', quantity: 0, unitPrice: 0 };
 
 const emitUpdate = () => window.dispatchEvent(new CustomEvent('stock-updated'));
 
@@ -23,7 +23,6 @@ const ProductsPage = () => {
   const [form, setForm] = useState(emptyForm);
   const [saving, setSaving] = useState(false);
   const [formError, setFormError] = useState('');
-  const editingId = useRef(null);
 
   const load = async () => {
     try {
@@ -44,11 +43,11 @@ const ProductsPage = () => {
 
   useEffect(() => { load(); }, []);
 
-  const openCreate = () => { setForm({ ...emptyForm, sku: generateSku() }); editingId.current = null; setModal('create'); setFormError(''); };
+  const openCreate = () => { setForm({ ...emptyForm, sku: generateSku() }); setModal('create'); setFormError(''); };
 
   const openEdit = (p) => {
-    editingId.current = p._id;
     setForm({
+      _id: p._id,
       sku: p.sku || '',
       name: p.name || '',
       description: p.description || '',
@@ -61,7 +60,7 @@ const ProductsPage = () => {
     setFormError('');
   };
 
-  const openDelete = (p) => { setForm(p); editingId.current = p._id; setModal('delete'); };
+  const openDelete = (p) => { setForm({ _id: p._id, name: p.name }); setModal('delete'); };
 
   const handleSave = async () => {
     setSaving(true);
@@ -70,9 +69,8 @@ const ProductsPage = () => {
       if (modal === 'create') {
         await productService.create(form);
       } else {
-        const id = editingId.current;
-        if (!id) { setFormError('ID do produto não encontrado.'); setSaving(false); return; }
-        await productService.update(id, {
+        if (!form._id) { setFormError('ID do produto não encontrado.'); setSaving(false); return; }
+        await productService.update(form._id, {
           name: form.name, description: form.description,
           category: form.category, supplier: form.supplier,
           quantity: Number(form.quantity), unitPrice: Number(form.unitPrice),
@@ -91,7 +89,7 @@ const ProductsPage = () => {
   const handleDelete = async () => {
     setSaving(true);
     try {
-      await productService.remove(editingId.current);
+      await productService.remove(form._id);
       setModal(null);
       emitUpdate();
       await load();
