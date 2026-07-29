@@ -28,7 +28,7 @@ const DashboardPage = () => {
         const suppliers = extractListData(sRes, []);
         const movements = extractListData(mRes, []);
         setStats({ products: products.length, categories: categories.length, suppliers: suppliers.length, movements: movements.length });
-        setRecentMovements(movements.slice(-5).reverse());
+        setRecentMovements(movements.slice(0, 5));
       } catch {}
     };
     load();
